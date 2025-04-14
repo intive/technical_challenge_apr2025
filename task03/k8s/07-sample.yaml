@@ -1,0 +1,12 @@
+apiVersion: intive.com/v1
+kind: RDSInstance
+metadata:
+  name: my-app-db
+  namespace: rds-operator-system
+spec:
+  dbName: myappdb
+  instanceType: db.t3.micro
+  engine: postgres
+  stage: staging
+  username: appuser
+  region: eu-central-1

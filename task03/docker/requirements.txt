@@ -1,0 +1,3 @@
+kopf
+boto3
+kubernetes
