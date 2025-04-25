@@ -17,18 +17,53 @@ spec:
               properties:
                 dbName:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.dbName is immutable and cannot be updated"
                 instanceType:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.instanceType is immutable and cannot be updated"
                 engine:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.engine is immutable and cannot be updated"
                 stage:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.stage is immutable and cannot be updated"
                 username:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.username is immutable and cannot be updated"
                 passwordSecretRef:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.passwordSecretRef is immutable and cannot be updated"
                 region:
                   type: string
+                  x-kubernetes-validations:
+                    # immutable rule added, additional rules for data 
+                    # verfication can be added, like naming, proper region etc.
+                    - rule: "self == oldSelf"
+                      message: "spec.region is immutable and cannot be updated"
   scope: Namespaced
   names:
     plural: rdsinstances
