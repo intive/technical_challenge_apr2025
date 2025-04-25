@@ -64,3 +64,41 @@ def create_fn(spec, name, namespace, body, **kwargs):
         raise
 
     return {"rds-instance": f"{name}-{stage}"}
+
+
+@kopf.on.delete('intive.com', 'v1', 'rdsinstances')
+def delete_fn(spec, name, namespace, body, **kwargs):
+    stage = spec.get('stage', 'dev')
+    password_secret = spec.get('passwordSecretRef', f"{name}-credentials")
+    region = spec.get('region', 'eu-central-1')  # Use from CRD or default
+
+    # Clean up RDS instance
+    try:
+        rds = boto3.client('rds', region_name=region)
+        db_instance_id = f"{name}-{stage}"
+        rds.delete_db_instance(
+            DBInstanceIdentifier=db_instance_id,
+            # For testing purposes we are not going to keep data, 
+            # this shoulde be False or configurable.
+            SkipFinalSnapshot=True
+        )
+        msg = f"RDS instance '{db_instance_id}' deletion initiated."
+        kopf.event(body, type="Normal", reason="RDSDeletion", message=msg)
+    except Exception as e:
+        msg = f"Failed to delete RDS instance: {e}"
+        kopf.event(body, type="Warning", reason="RDSDeletionFailed", message=msg)
+
+    # Clean up secret
+    try:
+        config.load_incluster_config()
+        k8s = client.CoreV1Api()
+        k8s.delete_namespaced_secret(name=password_secret, namespace=namespace)
+        msg = f"Secret '{password_secret}' deleted."
+        kopf.event(body, type="Normal", reason="SecretDeleted", message=msg)
+        logger.info(msg)
+    except client.exceptions.ApiException as e:
+        if e.status == 404:
+            msg = f"Secret '{password_secret}' already deleted."
+        else:
+            msg = f"Failed to delete secret: {e}"
+        kopf.event(body, type="Warning", reason="SecretDeletionFailed", message=msg)
