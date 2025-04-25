@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,8 +17,8 @@ spec:
       serviceAccountName: rds-operator
       containers:
       - name: rds-operator
-        image: intive.com/rds-operator:7
-        imagePullPolicy: Never
+        image: ghcr.io/intive/technical_challenge_apr2025_task03:1.0-dev-1
+        imagePullPolicy: Always
         env:
         - name: AWS_REGION
           value: "eu-central-1"
@@ -31,3 +32,18 @@ spec:
             secretKeyRef:
               name: aws-credentials
               key: secret_key
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
