@@ -5,7 +5,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p /certs && \
-    mkdir -p /app
+    mkdir -p /operator
 
 RUN addgroup --system --gid 1000 k8s_operator_grp && \
     adduser --system --uid 1000 --ingroup k8s_operator_grp k8s_operator_usr && \
