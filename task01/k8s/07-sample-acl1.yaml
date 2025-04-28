@@ -1,0 +1,13 @@
+apiVersion: intive.com/v1
+kind: KafkaACL
+metadata:
+  name: testuser-write-demo-topic
+  namespace: kafka-crd
+spec:
+  principal: "User:testuser"
+  operation: "WRITE"
+  resourceType: "TOPIC"
+  resourceName: "demo-topic"
+  patternType: "LITERAL"
+  host: "*"
+  permissionType: "ALLOW"

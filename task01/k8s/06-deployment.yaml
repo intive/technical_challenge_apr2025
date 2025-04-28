@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-crd-operator
+  namespace: kafka-crd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-crd-operator
+  template:
+    metadata:
+      labels:
+        app: kafka-crd-operator
+    spec:
+      serviceAccountName: kafka-crd-operator
+      containers:
+        - name: kafka-operator
+          image: ghcr.io/intive/technical_challenge_apr2025_task01:1.0-dev.8
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KAFKA_BOOTSTRAP
+              value: "<change_me>"
+            - name: KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: KAFKA_SASL_MECHANISM
+              value: "SCRAM-SHA-512"
+            - name: KAFKA_SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-sasl-auth
+                  key: username
+            - name: KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-sasl-auth
+                  key: password
+            - name: KAFKA_CA_CERT
+              value: "/certs/ca.crt"
+          volumeMounts:
+            - name: ca-cert
+              mountPath: /certs
+              readOnly: true
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      volumes:
+        - name: ca-cert
+          secret:
+            secretName: kafka-ca-cert
+            items:
+              - key: ca.crt
+                path: ca.crt

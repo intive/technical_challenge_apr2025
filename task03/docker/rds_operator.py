@@ -33,10 +33,8 @@ def create_fn(spec, name, namespace, body, **kwargs):
             }
         )
         k8s.create_namespaced_secret(namespace=namespace, body=secret)
-
         kopf.event(body, type="Normal", reason="SecretCreated",
                    message=f"Credentials stored in secret '{password_secret}'")
-
     except Exception as e:
         error_msg = f"Failed to create Kubernetes secret: {str(e)}"
         kopf.exception(body, reason="SecretError", message=error_msg)
@@ -60,7 +58,6 @@ def create_fn(spec, name, namespace, body, **kwargs):
     except Exception as e:
         error_msg = f"Failed to create RDS instance: {str(e)}"
         kopf.exception(body, reason="RDSFailure", message=error_msg)
-
         raise
 
     return {"rds-instance": f"{name}-{stage}"}
@@ -70,9 +67,7 @@ def create_fn(spec, name, namespace, body, **kwargs):
 def delete_fn(spec, name, namespace, body, **kwargs):
     stage = spec.get('stage', 'dev')
     password_secret = spec.get('passwordSecretRef', f"{name}-credentials")
-    region = spec.get('region', 'eu-central-1')  # Use from CRD or default
-
-    # Clean up RDS instance
+    region = spec.get('region', 'eu-central-1')
     try:
         rds = boto3.client('rds', region_name=region)
         db_instance_id = f"{name}-{stage}"
@@ -88,14 +83,12 @@ def delete_fn(spec, name, namespace, body, **kwargs):
         msg = f"Failed to delete RDS instance: {e}"
         kopf.event(body, type="Warning", reason="RDSDeletionFailed", message=msg)
 
-    # Clean up secret
     try:
         config.load_incluster_config()
         k8s = client.CoreV1Api()
         k8s.delete_namespaced_secret(name=password_secret, namespace=namespace)
         msg = f"Secret '{password_secret}' deleted."
         kopf.event(body, type="Normal", reason="SecretDeleted", message=msg)
-        logger.info(msg)
     except client.exceptions.ApiException as e:
         if e.status == 404:
             msg = f"Secret '{password_secret}' already deleted."

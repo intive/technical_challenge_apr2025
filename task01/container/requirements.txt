@@ -1,0 +1,3 @@
+kopf==1.37.5
+kubernetes==32.0.1
+kafka-python==2.1.5
