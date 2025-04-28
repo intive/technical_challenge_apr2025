@@ -1,0 +1,24 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: repository
+spec:
+  interval: 1m
+  url: https://<git.org.com/tenant-x>
+  ref:
+    branch: main
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: repository-sync
+spec:
+  serviceAccountName: <tenant-x>
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: repository
+  commonMetadata:
+    labels:
+      toolkit.fluxcd.io/tenant: <tenant-x>
+  prune: true
