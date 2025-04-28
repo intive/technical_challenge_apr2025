@@ -49,4 +49,3 @@ service:
       receivers: [otlp]
       processors: [k8sattributes, resource, batch]
       exporters: [otlphttp/tempo]
- 
