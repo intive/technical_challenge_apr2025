@@ -41,7 +41,7 @@ def delete_fn(spec, name, body, **kwargs):
         kopf.event(body, type="Normal", reason="KafkaAclDeleted",
                    message=f"Kafka ACL has been deleted: '{name}'")        
     except Exception as e:
-        kopf.exception(body, reason="KafkaAclError",
+        kopf.event(body, type="Warning", reason="KafkaAclError",
                        message=f"Failed to delete Kafka ACL: {e}'")
         raise
 
