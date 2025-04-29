@@ -4,7 +4,9 @@ kind: GitRepository
 metadata:
   name: repository
 spec:
-  url: https://git.org.com/tenant-a
+  url: ssh://git@github.com/intive/technical_challenge_apr2025.git
+  ref:
+    branch: dpildner
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

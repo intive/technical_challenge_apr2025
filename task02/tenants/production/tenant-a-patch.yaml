@@ -3,4 +3,4 @@ kind: Kustomization
 metadata:
   name: repository-sync
 spec:
-  path: ./production
+  path: ./task02/tenant-repo
