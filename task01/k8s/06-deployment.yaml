@@ -16,29 +16,19 @@ spec:
       serviceAccountName: kafka-crd-operator
       containers:
         - name: kafka-operator
-          image: ghcr.io/intive/technical_challenge_apr2025_task01:1.0-dev.8
+          image: ghcr.io/intive/technical_challenge_apr2025_task01:1.0-dev.10
           imagePullPolicy: IfNotPresent
           env:
             - name: KAFKA_BOOTSTRAP
-              value: "<change_me>"
-            - name: KAFKA_SECURITY_PROTOCOL
-              value: "SASL_SSL"
-            - name: KAFKA_SASL_MECHANISM
-              value: "SCRAM-SHA-512"
-            - name: KAFKA_SASL_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: kafka-sasl-auth
-                  key: username
-            - name: KAFKA_SASL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: kafka-sasl-auth
-                  key: password
+              value: "<change_me>" # comma separated list of brokers
             - name: KAFKA_CA_CERT
-              value: "/certs/ca.crt"
+              value: "/etc/ssl/certs/ca-certificates.crt"
+            - name: KAFKA_CLIENT_CERT
+              value: "/certs/client.crt"
+            - name: KAFKA_CLIENT_KEY
+              value: "/certs/client.key"
           volumeMounts:
-            - name: ca-cert
+            - name: certs
               mountPath: /certs
               readOnly: true
           securityContext:
@@ -57,9 +47,11 @@ spec:
               cpu: "500m"
               memory: "256Mi"
       volumes:
-        - name: ca-cert
+        - name: certs
           secret:
-            secretName: kafka-ca-cert
+            secretName: kafka-certs
             items:
-              - key: ca.crt
-                path: ca.crt
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
