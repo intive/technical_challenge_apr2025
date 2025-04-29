@@ -7,8 +7,6 @@ spec:
   url: ssh://git@github.com/intive/technical_challenge_apr2025.git
   secretRef:
     name: repo-secret
-  ref:
-    branch: dpildner
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
