@@ -1,0 +1,51 @@
+receivers:
+  otlp:
+    protocols:
+      grpc: {}
+      http: {}
+
+processors:
+  k8sattributes:
+    auth_type: serviceAccount
+    passthrough: false
+    extract:
+      labels:
+      - tag_name: tenant-id
+        key: toolkit.fluxcd.io/tenant
+
+  batch: {}
+
+  resource:
+    attributes:
+    - key: tenant-id
+      from_attribute: tenant-id
+      action: upsert
+
+exporters:
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    headers:
+      X-Scope-OrgID: "%{tenant-id}"
+  prometheusremotewrite:
+    endpoint: http://mimir:9009/api/v1/push
+    headers:
+      X-Scope-OrgID: "%{tenant-id}"
+  otlphttp/tempo:
+    endpoint: http://tempo:4318
+    headers:
+      X-Scope-OrgID: "%{tenant-id}"
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [k8sattributes, resource, batch]
+      exporters: [loki]
+    metrics:
+      receivers: [otlp]
+      processors: [k8sattributes, resource, batch]
+      exporters: [prometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processors: [k8sattributes, resource, batch]
+      exporters: [otlphttp/tempo]
