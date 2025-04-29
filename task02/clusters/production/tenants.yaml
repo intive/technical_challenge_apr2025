@@ -9,5 +9,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  # In realworld example, task02 dir should be a dedicated repo
+  # path: ./tenants/production
   path: ./task02/tenants/production
   prune: true
