@@ -22,3 +22,4 @@ spec:
     labels:
       toolkit.fluxcd.io/tenant: <tenant-x>
   prune: true
+  targetNamespace: <tenant-x>

@@ -19,3 +19,4 @@ spec:
   commonMetadata:
     labels:
       toolkit.fluxcd.io/tenant: tenant-a
+  targetNamespace: tenant-a
