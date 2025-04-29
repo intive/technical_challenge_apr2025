@@ -3,15 +3,15 @@ Based on the official example: https://github.com/fluxcd/flux2-multi-tenancy/
 
 The key ideas are:
 - Tenant isolation
-  - Enable tenant isolation features, configured in [flux-system/kustomization.yaml](clusters/production/flux-system/kustomization.yaml)
+  - Enable tenant isolation features, configured in [flux-system/kustomization.yaml](admin-repo/clusters/production/flux-system/kustomization.yaml)
     - Disable cross namespace references
     - Disallow Kustomize remote bases
   - Make sure default service account, without any privileges, is used as fallback by controllers
 - Notifications
   - Per tenant, each team receives notifications about their environment
   - Create Providers and Alerts for each tenant
-    - Create [Provider](tenants/base/common/pagerduty-provider.yaml) and [Alert](tenants/base/common/pagerduty-alert.yaml) for Pagerduty
-    - Create [Provider](tenants/base/common/rocketchat-provider.yaml) and [Alert](tenants/base/common/rocketchat-alert.yaml) for Rocketchat
+    - Create [Provider](admin-repo/tenants/base/common/pagerduty-provider.yaml) and [Alert](admin-repo/tenants/base/common/pagerduty-alert.yaml) for Pagerduty
+    - Create [Provider](admin-repo/tenants/base/common/rocketchat-provider.yaml) and [Alert](admin-repo/tenants/base/common/rocketchat-alert.yaml) for Rocketchat
 
 The templates also contain some code for Task-04 to add tenant labels to all resources created/owned by the tenant.
 
@@ -38,4 +38,4 @@ recommended patch:
 > And each named service account used observes the least privilege model.
 
 This repository applies this patch automatically via
-[kustomization.yaml](clusters/production/flux-system/kustomization.yaml) in both clusters.
+[kustomization.yaml](admin-repo/clusters/production/flux-system/kustomization.yaml) in both clusters.

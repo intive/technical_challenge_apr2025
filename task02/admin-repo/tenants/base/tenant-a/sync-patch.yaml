@@ -6,7 +6,7 @@ metadata:
 spec:
   url: ssh://git@github.com/intive/technical_challenge_apr2025.git
   secretRef:
-    name: flux-system
+    name: repo-secret
   ref:
     branch: dpildner
 ---
