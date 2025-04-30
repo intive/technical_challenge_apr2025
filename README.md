@@ -1,9 +1,8 @@
-![Logo](img/logo.png)
+<img src="img/logo.png" alt="intive" width="250">
 
 # Overview
 
-This repository contains responses to the tasks provided in the offer.
-Each task is located in its respective directory:
+With this repository intive provides solutions to a technical challenge. Each task is located in its respective directory.
 
 ## Tasks
 
